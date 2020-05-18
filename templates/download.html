@@ -1,5 +1,11 @@
 
 
+<head>
+    <title>Crawl - Image download</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
 <h1>구글 검색 이미지 다운로드 - {{ keyword }}</h1>
 <form action="/download/{{ keyword }}" method="post">
     <p><input type="submit" value='다운로드'></p>
@@ -11,3 +17,4 @@
     <p>{{ loop.index }}</p>
     <p><img src='../static/download/{{ keyword }}/{{ loop.index }}.jpg'></p>
 {% endfor %}
+</body>

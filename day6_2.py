@@ -95,7 +95,7 @@ def delete():
 
 
 @app.route('/download/<keyword>', methods=['get', 'post'])
-def download(keyword):
+def download(keyword): 
     if request.method == 'GET':
         return render_template('download.html', keyword=keyword)
     
@@ -121,7 +121,6 @@ def download(keyword):
         # img_display = img_display.append(imgdata)
         #print(len(imgdata))
 
-    
     return render_template('download.html', 
         keyword=keyword, img_links=imgdata)
 
