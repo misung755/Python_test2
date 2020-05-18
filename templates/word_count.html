@@ -1,0 +1,13 @@
+<h1>word count</h1>
+<form action="/news/words" method="get">
+</form>
+
+<hr>
+
+<h2>result</h2>
+
+<ol>
+{% for k, v in soup %}
+    <li>{{ k }}: {{ v }}</li>
+{% endfor %}
+</ol>
