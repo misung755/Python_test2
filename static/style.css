@@ -1,0 +1,32 @@
+*{
+    font-family: 'Noto Serif KR', serif;
+}
+
+body {
+    margin:0px;
+    padding:0px;
+  }
+a:link {
+    text-decoration: none;
+    color: black;
+  }
+a:hover {
+    text-decoration: underline;
+    color: darkblue;
+    background-color: #ebf39f;
+    cursor: zoom-in;
+  }
+a:visited {
+    color: black;  
+  }
+h1 {
+    padding-left:20px;
+    padding-bottom:10px;
+    padding-top:30px;
+    margin-bottom: 0px;
+    margin-top:0px;
+    vertical-align:text-bottom;
+    color:white;
+    width:300px;
+    margin-right:0px;
+  }

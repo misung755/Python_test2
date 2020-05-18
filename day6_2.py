@@ -1,14 +1,17 @@
 # 이미지 파일 다운로드 받아서 검색하기 + DB + 세션(로그인)
 from flask import Flask, render_template, request, session, redirect
 from konlpy.tag import Kkma
+from selenium import webdriver
+from bs4 import BeautifulSoup
+from datetime import date, datetime, timedelta
 import requests
 import re
-from bs4 import BeautifulSoup
 import os
 import pymysql
-from datetime import date, datetime, timedelta
+import base64
 
-app = Flask(__name__, template_folder='templates')
+
+app = Flask(__name__, template_folder='templates',static_folder='static')
 app.env = 'development'
 app.debug = True
 app.secret_key = 'misung' # 아무 문자열해도 됨
@@ -69,30 +72,58 @@ def logout():
     session.pop('user')
     return redirect('/')
 
+@app.route('/join',  methods=['get', 'post'])
+def join():
+    if request.method == 'GET':
+        return render_template('join.html', msg="회원가입 하세요")
+    
+    cursor = db.cursor()
+    sql = f"""INSERT INTO author(name, password) VALUES ('{request.form['userid']}', SHA2('{request.form['password']}', 256))""" 
+    print(sql)
+    cursor.execute(sql)
+    db.commit()
+
+    return render_template('login.html', msg="가입한 정보로 로그인 하세요^^")
+
+@app.route('/withdrawal')
+def delete():
+    cursor = db.cursor()
+    user = session.pop('user', None)
+    cursor.execute(f"delete from author where name = '{user['name']}'")
+    db.commit()
+    return redirect("/")
+
+
 @app.route('/download/<keyword>', methods=['get', 'post'])
 def download(keyword):
     if request.method == 'GET':
         return render_template('download.html', keyword=keyword)
+    
+    driver = webdriver.Chrome('chromedriver')
+    url = f"https://www.google.com/search?q={keyword}&tbm=isch"
+    driver.get(url) 
 
-    url = 'https://search.naver.com/search.naver'
-    query = dict(where='image', sm='tab_jum', query=keyword)
-
-    res = requests.get(url, params=query)
-    soup = BeautifulSoup(res.content, 'html.parser')
-    img_links = [tag.get('data-source') 
-                 for tag in soup.select('img._img')]
-
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    # images = soup.select('img.rg_i')
+    img_links = [tag.get('src') for tag in soup.select('img.rg_i')]
+    img_links = [str(i).replace('data:image/jpeg;base64,','') for i in img_links]
+    print(len(img_links))
     # 디렉토리 생성 
     os.makedirs(f'static/download/{keyword}', exist_ok=True)
-
+    
+    # img_display = []
     # 이미지 다운로드
     for i, link in enumerate(img_links):
-        res = requests.get(link)
+        #res = requests.get(link)
+        imgdata = base64.b64decode(link)
         with open(f'static/download/{keyword}/{i}.jpg', 'wb') as f:
-            f.write(res.content)
+            f.write(imgdata)
+        # img_display = img_display.append(imgdata)
+        #print(len(imgdata))
 
+    
     return render_template('download.html', 
-        keyword=keyword, img_links=img_links)
+        keyword=keyword, img_links=imgdata)
 
 @app.route('/news/ranking', methods=['get', 'post'])
 def news():
@@ -136,7 +167,7 @@ def words():
     words = [w for w in words if w[1] in ['NNG', 'NNP']]
 
     words = [(w, words.count(w)) for w in set(words)]
-    
+
     # 정렬하기(정렬하려면 리스트형식만 가능)
     words = sorted(words, key = lambda x: x[1], reverse=True)
 

@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>WEB-Python</title>
+        <title>Crwaling-Workshop</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="/static/style.css">
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300&display=swap" rel="stylesheet">
     </head>
     <body>
-        <h1><a href="/">WEB</a></h1>
+        <h1><a href="/">Perfect Coding with MS & GH</a></h1>
         <div id="container">
             <ol>
                 {% for m in menu %}
@@ -18,9 +19,9 @@
                 <p>
                     {% if user %}{{ user['name'] }}{% else %}비회원{% endif %} 님 안녕하세요.
                     {% if user %}
-                        <a href="/logout">로그아웃하기</a>
+                        <br><a href="/logout">로그아웃하기</a><br><a href="/withdrawal">탈퇴하기</a>
                     {% else %}
-                        <a href="/login">로그인하기</a>
+                    <br><a href="/login">로그인하기</a><br><a href="/join">회원가입하기</a>
                     {% endif %}
                 </p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo, voluptatem.
